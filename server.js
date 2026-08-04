@@ -6,13 +6,13 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { v4: uuid } = require("uuid");
 
-const matchmaking = require("./matchmaking");
-const rooms = require("./rooms");
-const { fileReport, listReports } = require("./reports");
+const matchmaking = require("./src/matchmaking");
+const rooms = require("./src/rooms");
+const { fileReport, listReports } = require("./src/reports");
 const {
   isVerified,
   verificationWebhookHandler,
-} = require("./verification");
+} = require("./src/verification");
 
 const PORT = process.env.PORT || 4000;
 const HOST = "0.0.0.0"; // Railway (and most container hosts) require binding
@@ -26,7 +26,7 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const NO_MATCH_MESSAGE =
   "No users are available to match right now. Please try again in a few moments.";
 
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "http://localhost:3000")
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "https://wisp-frontend-chi.vercel.app")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
@@ -85,12 +85,7 @@ app.get("/admin/reports", (req, res) => {
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "https://wisp-frontend-chi.vercel.app",
-    methods: ["GET", "POST"],
-    credentials: true
-  }
-});
+  cors: { origin: ALLOWED_ORIGINS, methods: ["GET", "POST"] },
   // Caps any single socket payload at 64KB at the transport level — well
   // above anything a real chat message/profile needs, but low enough to
   // block someone trying to send an oversized payload as a DoS vector.
