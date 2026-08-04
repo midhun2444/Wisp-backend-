@@ -49,15 +49,6 @@ function sharedInterestCount(a, b) {
 /**
  * Try to find the best waiting partner for `user` among everyone else
  * currently in the queue. Returns the matched WaitingUser, or null.
- *
- * Complexity: O(n × k) where n = people currently waiting, k = max
- * interests per person (capped at 20 — see register() validation in
- * server.js). For realistic queue sizes (tens to low thousands of
- * concurrent waiters) this runs in well under a millisecond. If this
- * ever needs to scale to tens of thousands of simultaneous waiters,
- * the next step would be bucketing the queue by matchType/gender so
- * candidates are pre-filtered before scoring — not needed at this
- * scale, so it's not built now to avoid premature complexity.
  */
 function findBestMatch(user) {
   let best = null;
@@ -68,8 +59,6 @@ function findBestMatch(user) {
     if (!isCompatible(user, other)) continue;
 
     const shared = sharedInterestCount(user, other);
-    // Score: shared interests weigh most, slight recency bonus so nobody
-    // waits forever behind someone who's been in queue a long time.
     const score = shared * 10 + (other.matchType === "random" ? 1 : 0);
 
     if (score > bestScore) {
