@@ -6,13 +6,12 @@
  * humans reviewing them, and this alone doesn't ban anyone.
  *
  * Capped at MAX_REPORTS entries (oldest dropped first) so this can't grow
- * without bound on a long-running server — a real memory leak the
- * original version had, since the array only ever grew.
+ * without bound on a long-running server.
  */
 
 const MAX_REPORTS = 2000;
 const reports = [];
-let nextId = 1; // monotonic — safe even after old reports are dropped
+let nextId = 1;
 
 function fileReport({ reporterId, reportedId, roomId, reason, details }) {
   const report = {
@@ -23,13 +22,12 @@ function fileReport({ reporterId, reportedId, roomId, reason, details }) {
     reason,
     details: details || "",
     createdAt: Date.now(),
-    status: "open", // open | reviewed | actioned | dismissed
+    status: "open",
   };
   reports.push(report);
   if (reports.length > MAX_REPORTS) {
     reports.splice(0, reports.length - MAX_REPORTS);
   }
-  // eslint-disable-next-line no-console
   console.warn(
     `[report] user ${reporterId} reported ${reportedId} in room ${roomId} — reason: ${reason}`
   );
