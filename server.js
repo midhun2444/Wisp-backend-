@@ -6,13 +6,13 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { v4: uuid } = require("uuid");
 
-const matchmaking = require("./src/matchmaking");
-const rooms = require("./src/rooms");
-const { fileReport, listReports } = require("./src/reports");
+const matchmaking = require("./matchmaking");
+const rooms = require("./rooms");
+const { fileReport, listReports } = require("./reports");
 const {
   isVerified,
   verificationWebhookHandler,
-} = require("./src/verification");
+} = require("./verification");
 
 const PORT = process.env.PORT || 4000;
 const HOST = "0.0.0.0"; // Railway (and most container hosts) require binding
