@@ -85,7 +85,12 @@ app.get("/admin/reports", (req, res) => {
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: ALLOWED_ORIGINS, methods: ["GET", "POST"] },
+  cors: {
+    origin: "https://wisp-frontend-chi.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
   // Caps any single socket payload at 64KB at the transport level — well
   // above anything a real chat message/profile needs, but low enough to
   // block someone trying to send an oversized payload as a DoS vector.
